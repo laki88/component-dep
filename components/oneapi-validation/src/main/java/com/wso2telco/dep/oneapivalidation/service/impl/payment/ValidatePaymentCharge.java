@@ -21,6 +21,8 @@ import com.wso2telco.dep.oneapivalidation.service.IServiceValidate;
 import com.wso2telco.dep.oneapivalidation.util.UrlValidator;
 import com.wso2telco.dep.oneapivalidation.util.Validation;
 import com.wso2telco.dep.oneapivalidation.util.ValidationRule;
+import com.wso2telco.dep.validator.handler.utils.HandlerEncriptionUtils;
+import com.wso2telco.dep.validator.handler.utils.HandlerUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.apache.commons.logging.Log;
@@ -37,6 +39,18 @@ public class ValidatePaymentCharge  implements IServiceValidate {
 
     /** The validation rules. */
     private final String[] validationRules = {"*", "transactions", "amount"};
+
+    private boolean userAnonymization;
+    private String maskingSecretKey;
+
+    public ValidatePaymentCharge() {
+
+    }
+
+    public ValidatePaymentCharge(boolean userAnonymization, String maskingSecretKey) {
+        this.userAnonymization = userAnonymization;
+        this.maskingSecretKey = maskingSecretKey;
+    }
 
     /* (non-Javadoc)
      * @see com.wso2telco.oneapivalidation.service.IServiceValidate#validate(java.lang.String)
@@ -68,6 +82,9 @@ public class ValidatePaymentCharge  implements IServiceValidate {
                 }
                 if (!jsonObj.isNull("endUserId")) {
                     endUserId = nullOrTrimmed(jsonObj.getString("endUserId"));
+                    if(this.userAnonymization) {
+                        endUserId = HandlerEncriptionUtils.maskUserId(endUserId, false, this.maskingSecretKey);
+                    }
                 }
                 if (!jsonObj.isNull("referenceCode")) {
                     referenceCode = nullOrTrimmed(jsonObj.getString("referenceCode"));

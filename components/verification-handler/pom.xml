@@ -95,6 +95,10 @@
             <groupId>com.wso2telco.core</groupId>
             <artifactId>dbutils</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.wso2telco.core</groupId>
+            <artifactId>pcr-service</artifactId>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
