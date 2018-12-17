@@ -23,6 +23,8 @@ import com.wso2telco.dep.oneapivalidation.util.ValidationRule;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.wso2telco.dep.validator.handler.utils.HandlerEncriptionUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -36,9 +38,23 @@ public class ValidateSendSms implements IServiceValidate {
     /** The validation rules. */
     private final String[] validationRules = {"outbound", "*", "requests"};
 
+    private boolean userAnonymization;
+
+    private String maskingSecretKey;
+    
     /* (non-Javadoc)
      * @see com.wso2telco.oneapivalidation.service.IServiceValidate#validate(java.lang.String)
      */
+
+    public ValidateSendSms() {
+
+    }
+
+    public ValidateSendSms(boolean userAnonymization, String maskingSecretKey) {
+        this.userAnonymization = userAnonymization;
+        this.maskingSecretKey = maskingSecretKey;
+    }
+
     public void validate(String json) throws CustomException {
 
         List<String> addresses = new ArrayList<String>(); // Note there can be multiple addresses specified
@@ -58,7 +74,12 @@ public class ValidateSendSms implements IServiceValidate {
 
                 JSONArray addressArray = objOtboundSMSMessageRequest.getJSONArray("address");
                 for (int a = 0; a < addressArray.length(); a++) {
-                    addresses.add(nullOrTrimmed(addressArray.getString(a)));
+                	if(this.userAnonymization) {
+                		addresses.add(nullOrTrimmed(HandlerEncriptionUtils.maskUserId(addressArray.getString(a), false, this.maskingSecretKey)));
+                	} else {
+                		addresses.add(nullOrTrimmed(addressArray.getString(a)));
+                	}
+                    
                 }
             }
 
@@ -102,7 +123,7 @@ public class ValidateSendSms implements IServiceValidate {
         ValidationRule[] rules = {
             new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY_TEL, "senderAddress", senderAddress),
             new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY_TEL, "address", addresses.toArray(new String[addresses.size()])),
-            new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "message", message),
+            new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY_MESSAGE, "message", message),
             new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL, "clientCorrelator", clientCorrelator),
             new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL, "senderName", senderName),
             new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL_URL, "notifyURL", notifyURL),

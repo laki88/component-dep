@@ -558,4 +558,15 @@
 
     <!--Validation Regex service endpoint - deployed via common gw/hub capps-->
     <ValidationRegexURL>{http://esb-host}:{esb-nio-port}/services/validationRegex</ValidationRegexURL>
+
+    <!-- This Property is to enable or disable msisdn masking feature. set 'true' to enable feature -->
+    <UserAnonymization>false</UserAnonymization>
+
+    <!-- This Property MUST be set if UserAnonymization is set to 'true'-->
+    <!-- Production or sandbox esb payment url -->
+    <ESBPaymentEndpointURL>{http://esb-host}:{esb-nio-port}/payment</ESBPaymentEndpointURL>
+    <!-- Production or sandbox esb sms url -->
+    <ESBSMSEndpointURL>{http://esb-host}:{esb-nio-port}/smsmessaging</ESBSMSEndpointURL>
+    <!-- HUB secret key for mask/encript msisdn -->
+    <UserMaskingSecretKey>changethis</UserMaskingSecretKey>
 </APIManager>
