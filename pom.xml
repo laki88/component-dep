@@ -135,6 +135,7 @@
 		<module>components/webapps/blacklist-whitelist-service</module>
 		<module>components/webapps/aggregator-blacklist</module>
 		<module>components/webapps/operator-onboard</module>
+		<module>components/webapps/usermask-service</module>
 		<module>components/jaggery-apps/manage</module>
 		<module>components/jaggery-apps/publisher</module>
 		<module>components/jaggery-apps/admin</module>
