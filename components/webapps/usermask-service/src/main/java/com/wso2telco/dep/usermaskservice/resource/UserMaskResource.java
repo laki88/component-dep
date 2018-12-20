@@ -17,14 +17,12 @@ public class UserMaskResource {
 
     private UserMaskService userMaskService = new UserMaskService();
 
-    @GET
-    @Path("msisdn/{msisdn}")
-    public Response getUserMaskByMSISDN(@PathParam("msisdn") String msisdn) {
-        UserMaskDTO userMaskDTO = new UserMaskDTO();
-        userMaskDTO.setUserId(msisdn);
-        String mask = userMaskService.getUserMask(msisdn);
+    @POST
+    @Path("/msisdn")
+    public Response getUserMaskByMSISDN(UserMaskDTO userMaskDTO) {
+        String mask = userMaskService.getUserMask(userMaskDTO.getUserId());
 
-        if (msisdn.equalsIgnoreCase(mask) || StringUtils.isEmpty(mask)) {
+        if (userMaskDTO.getUserId().equalsIgnoreCase(mask) || StringUtils.isEmpty(mask)) {
             ErrorDTO errorDTO = new ErrorDTO();
             errorDTO.setMessage("Cannot get user mask due to server error.");
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(errorDTO).build();
@@ -34,14 +32,12 @@ public class UserMaskResource {
     }
 
 
-    @GET
-    @Path("mask/{mask}")
-    public Response getUserIdByMask(@PathParam("mask") String mask) {
-        UserMaskDTO userMaskDTO = new UserMaskDTO();
-        userMaskDTO.setMask(mask);
-        String msisdn = userMaskService.getUserId(mask);
+    @POST
+    @Path("/mask")
+    public Response getUserIdByMask(UserMaskDTO userMaskDTO) {
+        String msisdn = userMaskService.getUserId(userMaskDTO.getMask());
 
-        if (msisdn.equalsIgnoreCase(mask) || StringUtils.isEmpty(msisdn)) {
+        if (msisdn.equalsIgnoreCase(userMaskDTO.getMask()) || StringUtils.isEmpty(msisdn)) {
             ErrorDTO errorDTO = new ErrorDTO();
             errorDTO.setMessage("Cannot get user id due to server error.");
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(errorDTO).build();
